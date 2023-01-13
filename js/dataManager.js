@@ -35,24 +35,34 @@ const getAllRecipes = async () => {
  * @returns {object[]} An array of recipes that match the search value
  */
 const filterSearch = (searchValue) => {
-  // console.time("filterSearch");
   const words = searchValue.split(" ");
-  const filteredWords = words.filter((word) => word.length >= 3);
-  recipesToDisplay = recipes.filter((recipe) => {
-    const title = recipe.name.toLowerCase();
-    const description = recipe.description.toLowerCase();
-    const ingredients = recipe.ingredientsArray;
-    return filteredWords.every(
-      (word) =>
-        title.includes(word) ||
-        description.includes(word) ||
-        ingredients.includes(word)
-    );
-  });
-  // console.timeEnd("filterSearch");
-  return recipesToDisplay;
+  const filteredWords = [];
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].length >= 3) {
+      filteredWords.push(words[i]);
+    }
+  }
+  let newRecipesToDisplay = [];
+  for (let i = 0; i < recipes.length; i++) {
+    const title = recipes[i].name.toLowerCase();
+    const description = recipes[i].description.toLowerCase();
+    const ingredients = recipes[i].ingredientsArray;
+    for (let j = 0; j < filteredWords.length; j++) {
+      if (
+        !title.includes(filteredWords[j]) &&
+        !description.includes(filteredWords[j]) &&
+        !ingredients.includes(filteredWords[j])
+      ) {
+        break;
+      }
+      if (j === filteredWords.length - 1) {
+        newRecipesToDisplay.push(recipes[i]);
+      }
+    }
+  }
+  recipesToDisplay = newRecipesToDisplay;
+  return newRecipesToDisplay;
 };
-
 /**
  * It takes a recipe object, and adds an ingredientsArray property to it based on its ingredients 
  * @param {object} recipe - a recipe object
