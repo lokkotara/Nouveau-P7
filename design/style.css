@@ -45,7 +45,8 @@ html {
 }
 .ellipsis {
   text-overflow: ellipsis;
-  word-wrap: nowrap;
+  /* word-wrap: nowrap; */
+  /* overflow-wrap: normal; */
   overflow: hidden;
   max-height: 125px;
   display: -webkit-box;
@@ -69,6 +70,15 @@ html {
 }
 .filterSpan {
   line-height: 2.5rem;
+}
+.bg-ustensils {
+  background-color: #ED6454!important;
+}
+.bg-appliances {
+  background-color: #68D9A4!important;
+}
+.bg-ingredients {
+  background-color: #3282F7!important;
 }
 
 .filterInput {
