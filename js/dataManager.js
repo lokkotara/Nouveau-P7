@@ -29,7 +29,6 @@ const initDataManager = async () => {
     const response = await fetch(src);
     recipes = await response.json();
     formatRecipes(recipes);
-    console.log(recipes);
     recipesToDisplay = recipes;
   } catch (error) {
     console.error(error);
@@ -50,7 +49,6 @@ const getAllRecipes = async () => {
  * @returns {object[]} An array of recipes that match the search value
  */
 const filterSearch = () => {
-  // console.time("filterSearch");
   const words = activeTags.searchValue.split(" ");
   const filteredWords = words.filter((word) => word.length >= 3);
   recipesToDisplay = recipes.filter((recipe) => {
@@ -63,15 +61,12 @@ const filterSearch = () => {
         )
     );
   });
-  // console.timeEnd("filterSearch");
   filterRecipes();
   return recipesToDisplay;
 };
 
 function filterRecipes() {
   let filteredRecipes = recipesToDisplay.filter((recipe) => {
-    // Filtrer les ingrédients
-
     if (
       activeTags.ingredients.length > 0 &&
       !activeTags.ingredients.every((ingredient) =>
@@ -80,16 +75,14 @@ function filterRecipes() {
     ) {
       return false;
     }
-    // Filtrer les ustensiles
     if (
       activeTags.ustensils.length > 0 &&
       !activeTags.ustensils.every((ustensil) =>
-        recipe.ustensils.includes(ustensil)
+        recipe.ustensils.map(ust => ust.toLowerCase()).includes(ustensil)
       )
     ) {
       return false;
     }
-    // Filtrer les appareils
     if (
       activeTags.appliances.length > 0 &&
       !activeTags.appliances.includes(
@@ -155,12 +148,40 @@ const getTagsToDisplay = () => {
     recipe.appliance.toLowerCase()
   );
   tagsListsToDisplay = {
-    ingredients: getFormattedList(ingredientsArray),
-    ustensils: getFormattedList(ustensilsArray),
-    appliances: getFormattedList(appliancesArray),
+    ingredients: filterByIngredientSearch(getFormattedList(ingredientsArray)),
+    ustensils: filterByUstensilSearch(getFormattedList(ustensilsArray)),
+    appliances: filterByApplianceSearch(getFormattedList(appliancesArray)),
   };
   return tagsListsToDisplay;
 };
+
+function filterByIngredientSearch(ingredients) {
+  const searchValue = document.getElementById("ingredientsFilterInput");
+  if (!searchValue) return ingredients;
+  else {
+    return ingredients.filter((ingredient) =>
+      ingredient.toLowerCase().includes(searchValue.value.toLowerCase()));
+  }
+}
+
+function filterByUstensilSearch(ustensils) {
+  const searchValue = document.getElementById("ustensilsFilterInput");
+  if (!searchValue) return ustensils;
+  else {
+    return ustensils.filter((ustensil) =>
+      ustensil.toLowerCase().includes(searchValue.value.toLowerCase()));
+  }
+}
+
+function filterByApplianceSearch(appliances) {
+  const searchValue = document.getElementById("appliancesFilterInput");
+  if (!searchValue) return appliances;
+  else {
+    return appliances.filter((appliance) =>
+      appliance.toLowerCase().includes(searchValue.value.toLowerCase())
+    );
+  }
+}
 
 function resetRecipesToDisplay() {
   recipesToDisplay = filterSearch();
@@ -168,8 +189,8 @@ function resetRecipesToDisplay() {
 
 function addTag(name, list) {
   if (!activeTags[list].includes(name)) activeTags[list].push(name);
-  // retirer le tag de la liste des tags à afficher
   filterSearch();
+  getTagsToDisplay();
   displaysActiveTags(activeTags);
   showAllRecipes(recipesToDisplay);
   const index = tagsListsToDisplay[list].indexOf(
@@ -178,26 +199,23 @@ function addTag(name, list) {
   if (index > -1) {
     tagsListsToDisplay[list].splice(index, 1);
     const { ingredients, ustensils, appliances } = tagsListsToDisplay;
-    // createFilters(ustensils, appliances, ingredients);
     updateDatasFilters(
       { name: "ustensils", array: ustensils },
       { name: "appliances", array: appliances },
       { name: "ingredients", array: ingredients }
     );
   }
-  // afficher les tags actifs
 }
 
 function removeTag(name, list) {
   const index = activeTags[list].indexOf(name);
-  const blob = activeTags[list].splice(index, 1);
-  tagsListsToDisplay[list].push(blob[0]);
+  const tagToRemove = activeTags[list].splice(index, 1);
+  tagsListsToDisplay[list].push(tagToRemove[0]);
   filterSearch();
   getTagsToDisplay();
   showAllRecipes(recipesToDisplay);
   displaysActiveTags(activeTags);
       const { ingredients, ustensils, appliances } = tagsListsToDisplay;
-      // createFilters(ustensils, appliances, ingredients);
       updateDatasFilters(
         { name: "ustensils", array: ustensils },
         { name: "appliances", array: appliances },
@@ -213,8 +231,15 @@ function updateSearchValue(value) {
   activeTags.searchValue = value;
 }
 
-function consoleActiveTags() {
-  console.log(activeTags);
+function filterTagSearch (filterName, filterValue) {
+  getTagsToDisplay();
+  if (filterName === "ingredients") {
+    return tagsListsToDisplay.ingredients.filter((ingredient) => ingredient.toLowerCase().includes(filterValue.toLowerCase()))
+  } else if (filterName === "ustensils") {
+    return tagsListsToDisplay.ustensils.filter((ustensil) => ustensil.toLowerCase().includes(filterValue.toLowerCase()))
+  } else if (filterName === "appliances") {
+    return tagsListsToDisplay.appliances.filter((appliance) => appliance.toLowerCase().includes(filterValue.toLowerCase()))
+  }
 }
 
 export {
@@ -228,5 +253,5 @@ export {
   filterListWithActiveTags,
   updateSearchValue,
   removeTag,
-  consoleActiveTags,
+  filterTagSearch,
 };

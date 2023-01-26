@@ -2,6 +2,7 @@ import {
   addTag,
   getTagsToDisplay,
   filterListWithActiveTags,
+  filterTagSearch,
   removeTag,
 } from "../dataManager.js";
 
@@ -37,8 +38,8 @@ function createFilters(array1, array2, array3) {
 
 function updateDatasFilters(array1, array2, array3) {
   updateSingleFilterDatas(array1.array, array1.name);
-  updateSingleFilterDatas(array2.array, array2.name);
-  updateSingleFilterDatas(array3.array, array3.name);
+  if (array2 !== undefined) updateSingleFilterDatas(array2.array, array2.name);
+  if (array3 !== undefined) updateSingleFilterDatas(array3.array, array3.name);
 }
 
 function updateFilters(array1, array2, array3) {
@@ -52,12 +53,22 @@ function updateSingleFilterDatas(array, name) {
   const filterListContainer = document.getElementById(
     `${name}FilterListContainer`
   );
-  const ul = createFilterUl(name);
-  arrayToUse.forEach((item) => {
-    const li = createFilterLi(item, name);
-    ul.appendChild(li);
-  });
-  filterListContainer.replaceChild(ul, filterListContainer.childNodes[0]);
+  if (arrayToUse.length > 0) {
+    const ul = createFilterUl(name);
+    arrayToUse.forEach((item) => {
+      const li = createFilterLi(item, name);
+      ul.appendChild(li);
+    });
+    filterListContainer.replaceChild(ul, filterListContainer.childNodes[0]);
+  } else {
+    const message = document.createElement("p");
+    message.classList.add("filterListMessage", "mt-2");
+    message.innerHTML = "Aucun résultat";
+    filterListContainer.replaceChild(
+      message,
+      filterListContainer.childNodes[0]
+    );
+  }
 }
 
 function updateSingleFilter(array, name) {
@@ -74,12 +85,9 @@ function updateSingleFilter(array, name) {
       toggleFilterContainer(name,false);
       toggleFilterInput(name,false);
     }
-    // console.log(test);
 }
 
 function createSingleFilter(name, displayName, arrayOfItems, container, placeholder) {
-  console.log("yop");
-  // const isOpen                = activeFilter === name;
   const filterContainer       = createFilterContainer(name);
   const label                 = createFilterLabel(name);
   const divInput              = createFilterDivInput(name);
@@ -116,7 +124,6 @@ function createFilterContainer(filterName) {
   const filterContainer = document.createElement("div");
   filterContainer.id = `${filterName}FilterContainer`;
   filterContainer.className = `filterContainer text-light rounded d-flex align-items-center bg-${filterName}`;
-  // if(isOpen) filterContainer.classList.add("open");
   return filterContainer;
 }
 
@@ -159,6 +166,12 @@ function createFilterInput(filterName, placeholder) {
   input.id = `${filterName}FilterInput`;
   input.placeholder = placeholder;
   input.classList.add("filterInput","hidden");
+  input.oninput = () => {
+    updateDatasFilters({
+      name: filterName,
+      array: filterTagSearch(filterName, input.value),
+    });
+  }
   return input;
 }
 
@@ -186,14 +199,8 @@ function createFilterIcon(filterName) {
     const i = document.createElement("i");
   i.className = "fas filterChevron";
   i.id = `${filterName}FilterIcon`;
-  // if(isOpen) {
-  //   i.classList.add("fa-chevron-up");
-  //   i.onclick = () => closeFilter();
-  // }
-  // else {
     i.classList.add("fa-chevron-down");
     i.onclick = () => openSelectFilter(filterName);
-  // }
   i.id = `${filterName}-filter-icon`;
   return i;
 }
@@ -201,7 +208,6 @@ function createFilterIcon(filterName) {
 function openSelectFilter(filterName) {
   activeFilter = filterName;
   const { ustensils, appliances, ingredients } = getTagsToDisplay();
-  // createFilters(ustensils, appliances, ingredients);
   updateFilters(
     { name: "ustensils", array: ustensils },
     { name: "appliances", array: appliances },
@@ -212,7 +218,6 @@ function openSelectFilter(filterName) {
 function closeFilter() {
   activeFilter = "";
   const { ustensils, appliances, ingredients } = getTagsToDisplay();
-  // createFilters(ustensils, appliances, ingredients);
   updateFilters(
     { name: "ustensils", array: ustensils },
     { name: "appliances", array: appliances },
@@ -226,8 +231,6 @@ function createFilterListContainer(filterName) {
   filterListContainer.className =
     "px-3 ms-0 overflow-hidden position-absolute top-100 hidden";
   filterListContainer.classList.add(`bg-${filterName}`);
-  // if (!isOpen) filterListContainer.classList.add("hidden");
-  // else filterListContainer.classList.remove("hidden");
   filterListContainer.style.left = "0";
   filterListContainer.style.width = "inherit";
   return filterListContainer;

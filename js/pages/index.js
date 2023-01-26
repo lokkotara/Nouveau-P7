@@ -3,7 +3,6 @@ import {
   getTagsToDisplay,
   filterSearch,
   updateSearchValue,
-  consoleActiveTags,
   resetRecipesToDisplay
 } from "../dataManager.js";
 import {
@@ -29,12 +28,10 @@ const listenSearchInput = (recipes) => {
   searchInput.value = "";
   searchInput.addEventListener("input", (event) => {
     updateSearchValue(event.target.value.toLowerCase());
-    consoleActiveTags();
     if (event.target.value.length >= 3) {
       const recipesToDisplay = filterSearch();
       showAllRecipes(recipesToDisplay);
       const { ustensils, appliances, ingredients } = getTagsToDisplay();
-      // createFilters(ustensils, appliances, ingredients);
       updateDatasFilters(
         { name: "ustensils", array: ustensils },
         { name: "appliances", array: appliances },
@@ -44,7 +41,6 @@ const listenSearchInput = (recipes) => {
       resetRecipesToDisplay();
       showAllRecipes(filterSearch());
       const { ustensils, appliances, ingredients } = getTagsToDisplay();
-      // createFilters(ustensils, appliances, ingredients);
       updateDatasFilters(
         { name: "ustensils", array: ustensils },
         { name: "appliances", array: appliances },
@@ -64,13 +60,11 @@ function templateRecipe(recipe) {
   return `
   <article class="recipeCard rounded d-flex flex-column mb-5 overflow-hidden">
     <div class="h-50">
-      <img  src="https://dummyimage.com/380/dedede/dedede" alt="${
-        recipe.name
-      }" class="h-100 w-100">
+      <img  src="https://dummyimage.com/380x178/C7BEBE/C7BEBE" alt="${recipe.name}" class="h-100 w-100">
     </div>
     <div class="d-flex flex-column recipeCardText h-50">
       <div class="d-flex justify-content-between p-2 px-4 align-items-center">
-        <span class="recipeCardName">${recipe.name}</span>
+        <span class="recipeCardName textEllipsis">${recipe.name}</span>
         <span class="cardTimeContainer">
           <span class="far fa-clock"></span>
           <span class="recipeCardTime fw-bold">${recipe.time} min</span>
