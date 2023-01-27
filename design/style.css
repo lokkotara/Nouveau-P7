@@ -48,8 +48,10 @@ html {
   /* word-wrap: nowrap; */
   /* overflow-wrap: normal; */
   overflow: hidden;
-  max-height: 125px;
+  max-height: 119px;
   display: -webkit-box;
+  line-clamp: 8;
+  -moz-box-orient: vertical;
   -webkit-line-clamp: 8; 
   -webkit-box-orient: vertical;
 }

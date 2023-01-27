@@ -128,10 +128,10 @@ function createFilterContainer(filterName) {
 }
 
 function createFilterLabel(filterName) {
-  const label = document.createElement("label");
+  const label = document.createElement("div");
   label.className =
     "d-flex flex-column justify-content-between container position-relative";
-  label.setAttribute("for", filterName);
+  // label.setAttribute("for", `${filterName}FilterInput`);
   return label;
 }
 
