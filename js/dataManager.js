@@ -45,7 +45,6 @@ const getAllRecipes = async () => {
  * characters, then filters the recipes array to only include recipes that have at least one of the
  * words in the title, description, or ingredients.
  *
- * @param {string} searchValue - the value of the search input
  * @returns {object[]} An array of recipes that match the search value
  */
 const filterSearch = () => {
@@ -61,12 +60,17 @@ const filterSearch = () => {
         )
     );
   });
-  filterRecipes();
-  return recipesToDisplay;
+  return filterByActiveTags(recipesToDisplay);
 };
 
-function filterRecipes() {
-  let filteredRecipes = recipesToDisplay.filter((recipe) => {
+/**
+ * It takes an array of recipes, and filters it based on the activeTags object.
+ * It returns an array of recipes that match the activeTags.
+ * @param recipes - an array of objects, each object is a recipe
+ * @returns An array of objects.
+ */
+function filterByActiveTags(recipes) {
+  let filteredRecipes = recipes.filter((recipe) => {
     if (
       activeTags.ingredients.length > 0 &&
       !activeTags.ingredients.every((ingredient) =>
@@ -94,6 +98,7 @@ function filterRecipes() {
     return true;
   });
   recipesToDisplay = filteredRecipes;
+  return recipesToDisplay;
 }
 
 
