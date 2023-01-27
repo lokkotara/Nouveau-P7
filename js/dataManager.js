@@ -45,7 +45,6 @@ const getAllRecipes = async () => {
  * characters, then filters the recipes array to only include recipes that have at least one of the
  * words in the title, description, or ingredients.
  *
- * @param {string} searchValue - the value of the search input
  * @returns {object[]} An array of recipes that match the search value
  */
 const filterSearch = () => {
@@ -57,7 +56,7 @@ const filterSearch = () => {
     }
   }
 
-  let recipesToDisplay = [];
+  let tempRecipes = [];
   for (let i = 0; i < recipes.length; i++) {
     let recipe = recipes[i];
     let match = true;
@@ -85,17 +84,18 @@ const filterSearch = () => {
       }
     }
     if (match) {
-      recipesToDisplay.push(recipe);
+      tempRecipes.push(recipe);
     }
   }
-
-  return filterRecipes(recipesToDisplay);
+  recipesToDisplay = filterRecipes(tempRecipes);
+  return recipesToDisplay;
 };
 
 function filterRecipes(recipesToDisplay) {
   let filteredRecipes = [];
   for (let i = 0; i < recipesToDisplay.length; i++) {
     let recipe = recipesToDisplay[i];
+
     if (activeTags.ingredients.length > 0) {
       let ingredientMatch = true;
       for (let j = 0; j < activeTags.ingredients.length; j++) {
@@ -108,6 +108,7 @@ function filterRecipes(recipesToDisplay) {
         continue;
       }
     }
+
     if (activeTags.ustensils.length > 0) {
       let ustensilMatch = true;
       for (let j = 0; j < activeTags.ustensils.length; j++) {
@@ -127,6 +128,7 @@ function filterRecipes(recipesToDisplay) {
         continue;
       }
     }
+
     if (activeTags.appliances.length > 0) {
       let applianceMatch = false;
       for (let j = 0; j < activeTags.appliances.length; j++) {
