@@ -48,31 +48,25 @@ const getAllRecipes = async () => {
  * @returns {object[]} An array of recipes that match the search value
  */
 const filterSearch = () => {
-  const words = activeTags.searchValue.split(" ");
-  let filteredWords = [];
-  for (let i = 0; i < words.length; i++) {
-    if (words[i].length >= 3) {
-      filteredWords.push(words[i]);
-    }
+  let filteredWords   = [];
+  let tempRecipes     = [];
+  const words         = activeTags.searchValue.split(" ");
+
+  for (let i = 0, size = words.length; i < size; i++) {
+    if (words[i].length >= 3) filteredWords.push(words[i]);
   }
 
-  let tempRecipes = [];
-  for (let i = 0; i < recipes.length; i++) {
-    let recipe = recipes[i];
-    let match = true;
-    for (let j = 0; j < filteredWords.length; j++) {
+  for (let i = 0, size = recipes.length; i < size; i++) {
+    let match   = true;
+    let recipe  = recipes[i];
+
+    for (let j = 0, size = filteredWords.length; j < size; j++) {
       let word = filteredWords[j];
-      if (
-        !recipe.name.toLowerCase().includes(word.toLowerCase()) &&
-        !recipe.description.toLowerCase().includes(word.toLowerCase())
-      ) {
+      if (!recipe.name.toLowerCase().includes(word.toLowerCase()) && !recipe.description.toLowerCase().includes(word.toLowerCase())) {
         let ingredientMatch = false;
-        for (let k = 0; k < recipe.ingredientsArray.length; k++) {
-          if (
-            recipe.ingredientsArray[k]
-              .toLowerCase()
-              .includes(word.toLowerCase())
-          ) {
+
+        for (let k = 0, size = recipe.ingredientsArray.length; k < size; k++) {
+          if (recipe.ingredientsArray[k].toLowerCase().includes(word.toLowerCase())) {
             ingredientMatch = true;
             break;
           }
