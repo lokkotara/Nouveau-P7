@@ -8,6 +8,12 @@ import {
 
 let activeFilter = "";
 
+/**
+ * It creates the 3 filters.
+ * @param {string[]} array1 - an array of strings
+ * @param {string[]} array2 - ["Four", "Casserole", "Couteau", "Planche à découper", "Saladier"]
+ * @param {string[]} array3 - ["Ingrédient 1", "Ingrédient 2", "Ingrédient 3", "Ingrédient 4"]
+ */
 function createFilters(array1, array2, array3) {
   const filterContainerWrapper = document.getElementById(
     "filterContainerWrapper"
@@ -36,6 +42,13 @@ function createFilters(array1, array2, array3) {
   );
 }
 
+/**
+ * It takes three arrays as arguments, and updates the data of the filters with the values of the
+ * arrays.
+ * @param {object} array1 - {array: [], name: ''}
+ * @param {object} array2 - {array: [], name: ''}. is facultative
+ * @param {object} array3 - {array: [], name: ''}. is facultative
+ */
 function updateDatasFilters(array1, array2, array3) {
   updateSingleFilterDatas(array1.array, array1.name);
   array2 && updateSingleFilterDatas(array2.array, array2.name);
@@ -48,6 +61,11 @@ function updateFilters(array1, array2, array3) {
   updateSingleFilter(array3.array, array3.name);
 }
 
+/**
+ * It creates a list of items based on the active tags and the name of the filter
+ * @param {string[]} array - the array of items to display
+ * @param {string} name - the name of the filter
+ */
 function updateSingleFilterDatas(array, name) {
   const arrayToUse = filterListWithActiveTags(array, name);
   const filterListContainer = document.getElementById(
@@ -71,6 +89,11 @@ function updateSingleFilterDatas(array, name) {
   }
 }
 
+/**
+ * If the filter is active, show the filter list, otherwise hide it.
+ * @param {string[]} array - the array of data to be used to populate the filter list
+ * @param {string} name - the name of the filter
+ */
 function updateSingleFilter(array, name) {
   updateSingleFilterDatas(array, name);
     if(activeFilter===name) {
@@ -87,6 +110,14 @@ function updateSingleFilter(array, name) {
     }
 }
 
+/**
+ * It creates a filter 
+ * @param {string} name - the name of the filter
+ * @param {string} displayName - The name of the filter that will be displayed on the page.
+ * @param {string[]} arrayOfItems - an array of strings that will be used to create the list items
+ * @param {HTMLElement} container - the container that the filter will be appended to
+ * @param {string} placeholder - the text that appears in the input field
+ */
 function createSingleFilter(name, displayName, arrayOfItems, container, placeholder) {
   const filterContainer       = createFilterContainer(name);
   const label                 = createFilterLabel();
@@ -266,6 +297,12 @@ function createFilterUl(filterName) {
   return ul;
 }
 
+/**
+ * Create a list item, add a class, add the text, and add an onclick event to add a tag.
+ * @param {string} item - the item that is being added to the list
+ * @param {string} filterName - the name of the filter
+ * @returns {HTMLLIElement} A li element.
+ */
 function createFilterLi(item, filterName) {
       const li = document.createElement("li");
     li.classList.add("filterListItem");
@@ -274,6 +311,10 @@ function createFilterLi(item, filterName) {
     return li;
 }
 
+/**
+ * It displays all the active tags in the filterTagContainer for the 3 filters.
+ * @param {{ingredients:string[], appliances:string[], ustensils:string[]}} arrays - an object containing the arrays of the 3 filters.
+ */
 function displaysActiveTags(arrays) {
   const activeTagsContainer = document.getElementById("filterTagContainer");
   activeTagsContainer.innerHTML = "";
@@ -292,6 +333,12 @@ function displaysActiveTags(arrays) {
   });
 }
 
+/**
+ * It creates an active tag 
+ * @param {string} type - the type of filter
+ * @param {string} name - the name of the tag
+ * @returns {HTMLSpanElement} A span element with two children, a span and a span.
+ */
 function createFilterTag(type, name) {
   const filterTag = document.createElement("span");
   filterTag.classList.add("filterTag", "btn", "text-light", "bg-"+type);

@@ -7,7 +7,6 @@ import {
 } from "../dataManager.js";
 import {
   createFilters,
-  updateFilters,
   updateDatasFilters,
 } from "../components/filter.js";
 
@@ -18,12 +17,12 @@ export default async function initPage() {
   createFilters(ustensils, appliances, ingredients);
 }
 
-const displayRecipes = (recipes) => {
+function displayRecipes(recipes) {
   showAllRecipes(recipes);
   listenSearchInput(recipes);
 };
 
-const listenSearchInput = (recipes) => {
+function listenSearchInput(recipes) {
   const searchInput = document.getElementById("searchInput");
   searchInput.value = "";
   searchInput.addEventListener("input", (event) => {
