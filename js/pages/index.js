@@ -58,7 +58,7 @@ function templateEmpty() {
 
 function templateRecipe(recipe) {
   return `
-  <article class="recipeCard rounded d-flex flex-column mb-5 overflow-hidden">
+  <div class="recipeCard rounded d-flex flex-column mb-5 overflow-hidden">
     <div class="h-50">
       <img  src="https://dummyimage.com/380x178/C7BEBE/C7BEBE" alt="${recipe.name}" class="h-100 w-100">
     </div>
@@ -77,7 +77,7 @@ function templateRecipe(recipe) {
         <span class="w-50 ellipsis">${recipe.description}</span>
       </div>
     </div>
-  </article>
+  </div>
     `;
 }
 
@@ -119,5 +119,3 @@ export function showAllRecipes(recipes) {
   }
   DOM.innerHTML = content;
 }
-
-
