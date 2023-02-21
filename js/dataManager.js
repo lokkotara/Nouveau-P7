@@ -1,6 +1,4 @@
 import {
-  createFilters,
-  updateFilters,
   updateDatasFilters,
   displaysActiveTags,
 } from "./components/filter.js";
@@ -11,20 +9,24 @@ let src;
 let recipes = null;
 let recipesToDisplay = null;
 let tagsListsToDisplay = {
-  ingredients: [],
-  ustensils: [],
-  appliances: [],
+  appliances    : [],
+  ingredients   : [],
+  ustensils     : [],
 };
 let activeTags = {
-  ingredients: [],
-  ustensils: [],
-  appliances: [],
-  searchValue : "",
+  appliances    : [],
+  ingredients   : [],
+  searchValue   : "",
+  ustensils     : [],
 };
 
 const setDataManagerSource = (source) => (src = source);
 
-const initDataManager = async () => {
+/**
+ * It fetches the data from the API, then formats the data and sets the recipesToDisplay variable to
+ * the recipes variable.
+ */
+async function initDataManager() {
   try {
     const response = await fetch(src);
     recipes = await response.json();
@@ -35,7 +37,14 @@ const initDataManager = async () => {
   }
 };
 
-const getAllRecipes = async () => {
+/**
+ * "If the recipes variable is not defined, then initialize the data manager, and then return the
+ * recipesToDisplay variable."
+ * 
+ * The recipesToDisplay variable is defined in the initDataManager function.
+ * @returns {object[]} recipesToDisplay
+ */
+async function getAllRecipes() {
   if (!recipes) await initDataManager();
   return recipesToDisplay;
 };
@@ -47,7 +56,7 @@ const getAllRecipes = async () => {
  *
  * @returns {object[]} An array of recipes that match the search value
  */
-const filterSearch = () => {
+function filterSearch() {
   let filteredWords   = [];
   let tempRecipes     = [];
   const words         = activeTags.searchValue.split(" ");
@@ -144,7 +153,7 @@ function filterRecipes(recipesToDisplay) {
  * It takes a recipe object, and adds an ingredientsArray property to it based on its ingredients
  * @param {object} recipe - a recipe object
  */
-const addIngredientsArray = (recipe) => {
+function addIngredientsArray(recipe) {
   const ingredientsArray = [];
   for (const ingredients of recipe.ingredients) {
     const splitIngredient = ingredients.ingredient.split(" ");
@@ -156,7 +165,11 @@ const addIngredientsArray = (recipe) => {
   recipe.ingredientsArray = ingredientsArray;
 };
 
-const formatRecipes = (recipes) => {
+/**
+ * It takes an array of recipes, and for each recipe, it adds an array of ingredients to the recipe.
+ * @param {object[]} recipes - an array of objects
+ */
+function formatRecipes (recipes) {
   for (const recipe of recipes) {
     addIngredientsArray(recipe);
   }
@@ -168,7 +181,7 @@ const formatRecipes = (recipes) => {
  * @param {string[][]|string[]} array - the array of arrays that you want to flatten and format
  * @returns {[string]}An array of sorted strings.
  */
-const getFormattedList = (array) => {
+function getFormattedList(array) {
   const formattedList = new Set();
   array.flat().forEach((string) => {
     formattedList.add(string.toLowerCase());
@@ -182,7 +195,7 @@ const getFormattedList = (array) => {
  * It takes an array of arrays, and returns an array of unique values.
  * @returns {{ingredients: string[], ustensils: string[], appliances: string[]}} An object with 3 properties: ingredients, ustensils, appliances.
  */
-const getTagsToDisplay = () => {
+function getTagsToDisplay() {
   const ustensilsArray = recipesToDisplay.map((recipe) => recipe.ustensils);
   const ingredientsArray = recipesToDisplay.map(
     (recipe) => recipe.ingredientsArray
@@ -191,13 +204,19 @@ const getTagsToDisplay = () => {
     recipe.appliance.toLowerCase()
   );
   tagsListsToDisplay = {
-    ingredients: filterByIngredientSearch(getFormattedList(ingredientsArray)),
-    ustensils: filterByUstensilSearch(getFormattedList(ustensilsArray)),
-    appliances: filterByApplianceSearch(getFormattedList(appliancesArray)),
+    appliances    : filterByApplianceSearch(getFormattedList(appliancesArray)),
+    ingredients   : filterByIngredientSearch(getFormattedList(ingredientsArray)),
+    ustensils     : filterByUstensilSearch(getFormattedList(ustensilsArray)),
   };
   return tagsListsToDisplay;
 };
 
+/**
+ * If there is no search value, return all ingredients, otherwise return only the ingredients that
+ * contain the search value.
+ * @param {string[]} ingredients - an array of strings
+ * @returns {string[]} The filtered array of ingredients.
+ */
 function filterByIngredientSearch(ingredients) {
   const searchValue = document.getElementById("ingredientsFilterInput");
   if (!searchValue) return ingredients;
@@ -207,6 +226,11 @@ function filterByIngredientSearch(ingredients) {
   }
 }
 
+/**
+ * If the searchValue is not null, then return the ustensils that include the searchValue.
+ * @param {string[]} ustensils - the array of ustensils
+ * @returns {string[]} An array of strings.
+ */
 function filterByUstensilSearch(ustensils) {
   const searchValue = document.getElementById("ustensilsFilterInput");
   if (!searchValue) return ustensils;
@@ -216,6 +240,12 @@ function filterByUstensilSearch(ustensils) {
   }
 }
 
+/**
+ * If there is no search value, return all appliances, otherwise return only the appliances that match
+ * the search value.
+ * @param {string[]} appliances - an array of strings
+ * @returns {string[]} The filtered array of appliances.
+ */
 function filterByApplianceSearch(appliances) {
   const searchValue = document.getElementById("appliancesFilterInput");
   if (!searchValue) return appliances;
@@ -226,10 +256,18 @@ function filterByApplianceSearch(appliances) {
   }
 }
 
+/**
+ * It sets the value of recipesToDisplay to the result of the filterSearch function.
+ */
 function resetRecipesToDisplay() {
   recipesToDisplay = filterSearch();
 }
 
+/**
+ * It adds a tag to the activeTags object and remove it from the tagsListsToDiplay concerned filter, then filters the recipes and updates the tags and recipes to display.
+ * @param {string} name - the name of the tag to add
+ * @param {string} list - the name of the list of tags to add the tag to
+ */
 function addTag(name, list) {
   if (!activeTags[list].includes(name)) activeTags[list].push(name);
   filterSearch();
@@ -250,6 +288,12 @@ function addTag(name, list) {
   }
 }
 
+/**
+ * It removes a tag from the activeTags array and adds it to the tagsListsToDisplay array, filters the recipes and then update the
+ * recipes and the filters.
+ * @param {string} name - the name of the tag to remove
+ * @param {string} list - the name of the list of tags to remove the tag from
+ */
 function removeTag(name, list) {
   const index = activeTags[list].indexOf(name);
   const tagToRemove = activeTags[list].splice(index, 1);
@@ -266,14 +310,31 @@ function removeTag(name, list) {
       );
 }
 
+/**
+ * It filters out the items in the array that are in the activeTags array.
+ * @param {string[]} array - the array of items to filter
+ * @param {string} name - the name of the tag
+ * @returns {string[]} The filtered array.
+ */
 function filterListWithActiveTags(array, name) {
   return array.filter((item) => !activeTags[name].includes(item.toLowerCase()));
 }
 
+/**
+ * It takes a value, and sets the searchValue property of the activeTags object to that value.
+ * @param {string} value - The value of the search input
+ */
 function updateSearchValue(value) {
   activeTags.searchValue = value;
 }
 
+/**
+ * It takes a filterName and a filterValue as arguments, gets the tags to display, and then filters the
+ * tags to display based on the filterName and filterValue.
+ * @param {string} filterName - "ingredients"
+ * @param {string} filterValue - the value that the user is typing in the search bar
+ * @returns {string[]} An array of strings.
+ */
 function filterTagSearch (filterName, filterValue) {
   getTagsToDisplay();
   if (filterName === "ingredients") {
