@@ -38,8 +38,8 @@ function createFilters(array1, array2, array3) {
 
 function updateDatasFilters(array1, array2, array3) {
   updateSingleFilterDatas(array1.array, array1.name);
-  if (array2 !== undefined) updateSingleFilterDatas(array2.array, array2.name);
-  if (array3 !== undefined) updateSingleFilterDatas(array3.array, array3.name);
+  array2 && updateSingleFilterDatas(array2.array, array2.name);
+  array3 && updateSingleFilterDatas(array3.array, array3.name);
 }
 
 function updateFilters(array1, array2, array3) {
@@ -89,7 +89,7 @@ function updateSingleFilter(array, name) {
 
 function createSingleFilter(name, displayName, arrayOfItems, container, placeholder) {
   const filterContainer       = createFilterContainer(name);
-  const label                 = createFilterLabel(name);
+  const label                 = createFilterLabel();
   const divInput              = createFilterDivInput(name);
   const input                 = createFilterInput(name, placeholder);
   const span                  = createFilterSpan(name,displayName);
@@ -127,11 +127,10 @@ function createFilterContainer(filterName) {
   return filterContainer;
 }
 
-function createFilterLabel(filterName) {
+function createFilterLabel() {
   const label = document.createElement("div");
   label.className =
     "d-flex flex-column justify-content-between container position-relative";
-  // label.setAttribute("for", `${filterName}FilterInput`);
   return label;
 }
 
@@ -160,6 +159,14 @@ function createFilterDivInput(name) {
   return divInput;
 }
 
+/**
+ * It creates an input element, sets its type, id, placeholder, and classList, and adds an oninput
+ * event listener that calls the updateDatasFilters function with an object containing the name of the
+ * filter and an array of the results of the filterTagSearch function.
+ * @param {string} filterName - the name of the filter.
+ * @param {string} placeholder - The text that will be displayed in the input field when it's empty.
+ * @returns {HTMLInputElement} An input element.
+ */
 function createFilterInput(filterName, placeholder) {
   const input = document.createElement("input");
   input.type = "text";

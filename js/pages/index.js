@@ -119,5 +119,3 @@ export function showAllRecipes(recipes) {
   }
   DOM.innerHTML = content;
 }
-
-

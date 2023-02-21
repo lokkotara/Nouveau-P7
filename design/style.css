@@ -45,8 +45,6 @@ html {
 }
 .ellipsis {
   text-overflow: ellipsis;
-  /* word-wrap: nowrap; */
-  /* overflow-wrap: normal; */
   overflow: hidden;
   max-height: 119px;
   display: -webkit-box;
@@ -105,9 +103,6 @@ html {
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-}
-.itemSpan {
-  white-space: nowrap;
 }
 .filterChevron {
   cursor: pointer;
