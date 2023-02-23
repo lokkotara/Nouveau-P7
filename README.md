@@ -18,10 +18,10 @@ Les Petits Plats has the following features:
 
 ## Installation
 
-To install this project, simply clone this repository to your local machine using `git clone https://github.com/lokkotara/Nouveau-P7.git`
+To install this project, simply clone this repository to your local machine using `git clone https://github.com/lokkotara/P7_13012023.git`
 
 ## Usage
 
 To access the site, you need to have the app hosted on a server. 
 - In local, you can install live server and open it by right clicking on index.html.
-- Else, here is a github page link : [github page](https://lokkotara.github.io/Nouveau-P7/)
+- Else, here is a github page link : [github page](https://lokkotara.github.io/P7_13012023/)
